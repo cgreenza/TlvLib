@@ -2,7 +2,6 @@
 
 namespace TlvLib
 {
-    [Serializable]
     public class TlvException : Exception
     {
         public TlvException(string message)
