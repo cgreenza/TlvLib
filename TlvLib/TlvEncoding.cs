@@ -35,7 +35,7 @@ namespace TlvLib
                     return null; // end of stream, no tag found
                 }
 
-                if (removeEmvPadding && byteCount == 0 && (thisByte == 0x00 || thisByte == 0xff))
+                if (removeEmvPadding && byteCount == 0 && (thisByte == 0x00 || thisByte == 0xff)) // todo: check 0xff usage!!!
                     continue; // skip if not already reading tag (EMV allows 0x00 or 0xff padding between TLV entries)
 
                 byteCount++;
@@ -55,16 +55,16 @@ namespace TlvLib
         /// </summary>
         /// <param name="stream">Stream to read</param>
         /// <returns>length or null to indicate indefinite length</returns>
-        public static uint? ReadLength(Stream stream)
+        public static int? ReadLength(Stream stream)
         {
             var readByte = stream.ReadByte();
             if (readByte == -1)
                 throw new TlvException("Unexpected end of stream while reading length");
 
             if ((readByte & 0x80) == 0)
-                return (uint)readByte; // length is in first byte
+                return (int)readByte; // length is in first byte
 
-            uint length = 0;
+            int length = 0;
             var lengthBytes = readByte & 0x7f; // remove 0x80 bit
 
             if (lengthBytes == 0)
@@ -80,7 +80,7 @@ namespace TlvLib
                     throw new TlvException("Unexpected end of stream while reading length");
 
                 length <<= 8;
-                length |= (uint)readByte;
+                length |= (int)readByte;
             }
 
             return length;
@@ -139,7 +139,7 @@ namespace TlvLib
         /// </summary>
         /// <param name="stream">stream to write to</param>
         /// <param name="length">length to write or null to write indefinite length</param>
-        public static void WriteLength(Stream stream, uint? length)
+        public static void WriteLength(Stream stream, int? length)
         {
             if (length == null)
             {
@@ -177,6 +177,52 @@ namespace TlvLib
             {
                 var data = (byte)(length >> (8 * i));
                 stream.WriteByte(data);
+            }
+        }
+
+        public static void WriteTlv(Stream stream, uint tag, byte[] value)
+        {
+            WriteTag(stream, tag);
+
+            int length = value?.Length ?? 0;
+            WriteLength(stream, length);
+
+            if (value == null)
+                return;
+
+            stream.Write(value, 0, length);
+        }
+
+        public static void ProcessTlvStream(Stream stream, Action<uint, byte[]> processTag, bool removeEmvPadding = false)
+        {
+            while (true)
+            {
+                var tag = ReadNextTag(stream, removeEmvPadding);
+                if (tag == null)
+                    return;
+
+                var length = ReadLength(stream);
+                if (length == 0)
+                    continue;
+                if (length == null)
+                    throw new TlvException("Indefinite length not supported");
+
+                var buf = new byte[length.Value];
+                var readIndex = 0;
+                while (true)
+                {
+                    var lengthRead = stream.Read(buf, readIndex, length.Value - readIndex);
+
+                    if (lengthRead == 0)
+                        throw new TlvException("Unexpected end of stream while reading data");
+
+                    readIndex += lengthRead;
+
+                    if (length == readIndex)
+                        break; // all data read
+                }
+
+                processTag(tag.Value, buf);
             }
         }
     }
