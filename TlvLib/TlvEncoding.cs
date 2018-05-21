@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace TlvLib
+namespace Greensoft.TlvLib
 {
     // X.690 Basic Encoding Rules (Type/Tag Length Value) i.e. ISO/IEC 8825–1
     // Also EMV 4.2 Book 3, Annex B: Rules for BER-TLV Data Objects

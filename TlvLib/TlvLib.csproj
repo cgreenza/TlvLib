@@ -4,16 +4,19 @@
     <TargetFrameworks>netstandard1.0;net35;net40</TargetFrameworks>
     <Authors>Christopher Green</Authors>
     <Company />
-    <Product />
-    <Version>0.1.1</Version>
+    <Product>TlvLib</Product>
+    <Version>1.0.0</Version>
     <Description>C# .NET library for reading and writing BER-TLV (Basic Encoding Rules, Tag Length Value) encoded data.</Description>
     <Copyright>Copyright © Christopher Green 2018</Copyright>
     <PackageTags>BER TLV</PackageTags>
-    <AssemblyVersion>0.0.1.1</AssemblyVersion>
-    <FileVersion>0.0.1.1</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/cgreenza/TlvLib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/cgreenza/TlvLib</RepositoryUrl>
+    <AssemblyName>Greensoft.TlvLib</AssemblyName>
+    <RootNamespace>Greensoft.TlvLib</RootNamespace>
+    <PackageId>TlvLib</PackageId>
   </PropertyGroup>
 
 </Project>

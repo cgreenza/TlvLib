@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TlvLib
+namespace Greensoft.TlvLib
 {
     public class TlvException : Exception
     {
