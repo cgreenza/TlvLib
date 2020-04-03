@@ -180,7 +180,7 @@ namespace Greensoft.TlvLib
             }
         }
 
-        public static void WriteTlv(Stream stream, uint tag, byte[] value)
+        public static void WriteTlv(Stream stream, uint tag, params byte[] value)
         {
             WriteTag(stream, tag);
 
